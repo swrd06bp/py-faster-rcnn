@@ -29,6 +29,18 @@ case $DATASET in
     PT_DIR="pascal_voc"
     ITERS=70000
     ;;
+  traffic)
+    TRAIN_IMDB="traffic_2016_train"
+    TEST_IMDB="traffic_2016_test"
+    PT_DIR="traffic"
+    ITERS=60000
+    ;;
+  traffic_india)
+    TRAIN_IMDB="traffic_india_2016_trainval"
+    TEST_IMDB="traffic_india_2016_test"
+    PT_DIR="traffic_india"
+    ITERS=20000
+    ;;
   coco)
     # This is a very long and slow training schedule
     # You can probably use fewer iterations and reduce the
@@ -48,18 +60,20 @@ LOG="experiments/logs/faster_rcnn_end2end_${NET}_${EXTRA_ARGS_SLUG}.txt.`date +'
 exec &> >(tee -a "$LOG")
 echo Logging output to "$LOG"
 
-time ./tools/train_net.py --gpu ${GPU_ID} \
-  --solver models/${PT_DIR}/${NET}/faster_rcnn_end2end/solver.prototxt \
-  --weights data/imagenet_models/${NET}.v2.caffemodel \
-  --imdb ${TRAIN_IMDB} \
-  --iters ${ITERS} \
-  --cfg experiments/cfgs/faster_rcnn_end2end.yml \
-  ${EXTRA_ARGS}
+#time ./tools/train_net.py --gpu ${GPU_ID} \
+  #--solver models/${PT_DIR}/${NET}/faster_rcnn_end2end/solver.prototxt \
+  #--weights data/imagenet_models/${NET}.v2.caffemodel \
+  #--imdb ${TRAIN_IMDB} \
+  #--iters ${ITERS} \
+  #--cfg experiments/cfgs/faster_rcnn_end2end.yml \
+  #${EXTRA_ARGS}
 
 set +x
 NET_FINAL=`grep -B 1 "done solving" ${LOG} | grep "Wrote snapshot" | awk '{print $4}'`
 set -x
 
+#temp
+NET_FINAL=/home/ubuntu/py-faster-rcnn/output/faster_rcnn_end2end/traffic_2016_train/zf_faster_rcnn_iter_60000.caffemodel
 time ./tools/test_net.py --gpu ${GPU_ID} \
   --def models/${PT_DIR}/${NET}/faster_rcnn_end2end/test.prototxt \
   --net ${NET_FINAL} \
