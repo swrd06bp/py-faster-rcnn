@@ -11,7 +11,21 @@ __sets = {}
 
 from datasets.pascal_voc import pascal_voc
 from datasets.coco import coco
+from datasets.traffic import traffic
+from datasets.traffic_india import traffic_india
 import numpy as np
+
+# cars-test dataset
+for year in ['2016']:
+    for split in ['train', 'val', 'trainval', 'test']:
+        name = 'traffic_{}_{}'.format(year, split)
+        __sets[name] = (lambda split=split, year=year: traffic(split, year))
+
+# traffic india dataset
+for year in ['2016']:
+    for split in ['train', 'val', 'trainval', 'test']:
+        name = 'traffic_india_{}_{}'.format(year, split)
+        __sets[name] = (lambda split=split, year=year: traffic_india(split, year))
 
 # Set up voc_<year>_<split> using selective search "fast" mode
 for year in ['2007', '2012']:
